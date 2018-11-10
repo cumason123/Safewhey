@@ -8,3 +8,4 @@
 ```$ python server.py```
 ## Run mac os
 ```$ python3 server.py```
+## Open localhost:5000 on a web browser
