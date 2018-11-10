@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>Safewhey</title>
-	</head>
-
-	<body>
-		<h1>Index Page</h1>
-		<h2>{{InputData}}</h1>
-	</body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for i in range(5) %}
+    <h1>Index Page</h1>
+    <h2>{{message}}</h2>
+{% endfor %}
+</body>
 </html>
