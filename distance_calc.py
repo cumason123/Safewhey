@@ -14,7 +14,7 @@ origin = str(origin_lat) + ", " + str(origin_long)
 destination = str(dest_lat) + ", " + str(dest_long)
 
 def create_directions_result():
-    directions_result = gmaps.directions(origin, destination, mode="driving", alternatives=True)
+    directions_result = gmaps.directions(origin, destination, mode="walking", alternatives=True)
     return directions_result
 
 def create_directions_url(): # use to embed in webpage

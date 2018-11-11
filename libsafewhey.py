@@ -90,7 +90,7 @@ def getSomeRouteValues(start, end, max_num=3):
 		iter += 1
 	return routeValues
 
-def getSrcDestSafetyRouteVals(start_addr, dest_addr):
+def SafeWhey(start_addr, dest_addr):
 	try:
 		start_coord = gmaps.geocode(start_addr)[0]['geometry']['location']
 		end_coord = gmaps.geocode(dest_addr)[0]['geometry']['location']
@@ -104,5 +104,5 @@ def boundRec(start, end):
 	return lower_left_coordinate, upper_right_coordinate
 
 if __name__ == '__main__':
-	print(getSrcDestSafetyRouteVals('16 winter ave', 'staten island technical highschool'))
+	print(SafeWhey('16 winter ave', 'staten island technical highschool'))
 	# testPoints([40.638982, -74.082301], [40.642608, -74.075460])
