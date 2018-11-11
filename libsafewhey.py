@@ -1,12 +1,16 @@
 import requests
 import googlemaps
 from datetime import datetime
-
+import pprint
 gmaps_key = "AIzaSyA-L1-CDamtVsUcngy65o54omBY_wn9TT0"
 gmaps = googlemaps.Client(key = gmaps_key)
 now = datetime.now()
 
 def getStartEndStepCoordinates(start_coord, end_coord):
+	'''
+	Finds and returns lat-long coordinates for every movement along 
+	steps found through google maps api
+	'''
 	origin = str(start_coord[0]) + "," + str(start_coord[1])
 	dest = str(end_coord[0]) + "," + str(end_coord[1])
 	directions_result = gmaps.directions(origin, dest, 
@@ -22,9 +26,27 @@ def getStartEndStepCoordinates(start_coord, end_coord):
 		end += [[step['end_location']['lat'], step['end_location']['lng']]] if 'end_location' in step else None
 	return start, end
 
+
+def testPoints(start, end):
+	start, end = boundRec(start, end)
+	params = (
+		(
+			('bottomLeftLat', start[0]),
+			('bottomLeftLon', start[1]),
+			('topRightLat', end[0]),
+			('topRightLon', end[1]),
+			('apikey', 'FfFYj6Z02qDq58tNnOySJKZqavjARqI9'),
+		)
+	)
+	response = requests.get('https://apis.solarialabs.com/shine/v1/total-home-scores/area-search',
+		params = params)
+	data = response.json()
+	print(data)
+
 def getAreaVal(start, end):
-	p1, p2 = boundRec(start, end)
 	start, end = getStartEndStepCoordinates(start, end)
+	print(start, end)
+	vals = []
 	for i in range(len(start)):
 		lower_left_coordinate, upper_right_coordinate = boundRec(start[i], end[i])
 		params = (
@@ -33,14 +55,18 @@ def getAreaVal(start, end):
 				('bottomLeftLon', str(lower_left_coordinate[1])),
 				('topRightLat', str(upper_right_coordinate[0])),
 				('topRightLon', str(upper_right_coordinate[1])),
-				('apiKey', 'FfFYj6z02qDq58tNnOySJKZqavjARqI9'),
+				('apikey', 'FfFYj6Z02qDq58tNnOySJKZqavjARqI9'),
 			)
 		)
-		response = requests.get('https://apis.solarislabs.com/shine/v1/total-home-scores/area-search',
+		response = requests.get('https://apis.solarialabs.com/shine/v1/total-home-scores/area-search',
 			params = params)
 		data = response.json()
-		print(data)
-		break
+		if data['num_results_returned'] > 0:
+			results = data['results']
+			subresult = []
+			for item in results:
+				subresult += [item['totalHomeScores']]
+			# pprint.pprint(data['results']['totalHomeScores'])
 
 def boundRec(start, end):
 	lower_left_coordinate = [min(start[0], end[0]), min(start[1], end[1])]
@@ -49,3 +75,6 @@ def boundRec(start, end):
 
 if __name__ == '__main__':
 	getAreaVal([40.638982, -74.082301], [40.642608, -74.075460])
+	# testPoints([40.638982, -74.082301], [40.642608, -74.075460])
+
+
