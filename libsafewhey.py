@@ -41,6 +41,7 @@ def testPoints(start, end):
 def getRouteValue(route):
 	start, end = getStartEndStepCoordinates(route)
 	vals = []
+	toggle = True
 	for i in range(len(start)):
 		lower_left_coordinate, upper_right_coordinate = boundRec(start[i], end[i])
 		params = (
@@ -55,9 +56,14 @@ def getRouteValue(route):
 		response = requests.get('https://apis.solarialabs.com/shine/v1/total-home-scores/area-search',
 			params = params)
 		data = response.json()
+		pprint.pprint(data)
+
 		if 'num_results_returned' in data:
 			if data['num_results_returned'] > 0:
 				results = data['results']
+				if (toggle):
+					print(data)
+					toggle = False
 				subresult = 0
 				for item in results:
 					totalHomeScores = item['totalHomeScores']['safety']
@@ -67,6 +73,8 @@ def getRouteValue(route):
 					valueSum = valueSum/len(totalHomeScores)
 					subresult += valueSum
 				vals += [subresult/data['num_results_returned']]
+	if len(vals) == 0:
+		return -1
 	avgval = sum(vals)/len(vals)
 	return avgval
 
@@ -86,9 +94,14 @@ def getSomeRouteValues(start, end, max_num=3):
 	for route in directions_result:
 		if iter > max_num:
 			break
-		routeValues += [getRouteValue(route)]
+		num = getRouteValue(route)
+		if num == -1:
+			routeValues += ['Unknown']
+		else:
+			routeValues += [getRouteValue(route)]
 		iter += 1
-	return routeValues
+	iter += -1
+	return routeValues, iter
 
 def SafeWhey(start_addr, dest_addr):
 	try:
@@ -96,7 +109,9 @@ def SafeWhey(start_addr, dest_addr):
 		end_coord = gmaps.geocode(dest_addr)[0]['geometry']['location']
 	except:
 		return {'err': 'unknown location'}
-	return {'safety_vals':getSomeRouteValues(start_coord, end_coord)}
+	ret = getSomeRouteValues(start_coord, end_coord)
+	return {'safety_vals':ret[0], 
+	'num_routes':ret[1]}
 
 def boundRec(start, end):
 	lower_left_coordinate = [min(start[0], end[0]), min(start[1], end[1])]

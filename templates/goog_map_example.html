@@ -16,13 +16,33 @@
         margin: 0;
         padding: 0;
       }
+
     </style>
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+
   </head>
   <body>
     <div id="map"></div>
-    <div id="panel"></div>
+    <div style="position: relative;">
+      <div id="panel"></div>
+      <div id="safety_scores">
+<!--         <h2 id="score" style="position:absolute;right:15%;top:15%;">45</h2>
+ -->      </div>
+      
+      <p id="score" style="position:absolute;right:15%;top:0%;">Safety Score for Routes:</p>
+      {% for i in range(num_routes) %}
+        {% if results[i] <= 40 %}
+          <h3 id="score" style="color:red;position:absolute;right:15%;top:{{i*3+3}}%;">{{results[i]}}</h3>
+        {% elif results[i] <= 60 %}
+          <h3 id="score" style="color:orange;position:absolute;right:15%;top:{{i*3+3}}%;">{{results[i]}}</h3>
+        {% elif results[i] <= 80 %}
+          <h3 id="score" style="color:green;position:absolute;right:15%;top:{{i*3+3}}%;">{{results[i]}}</h3>
+        {% else %}
+          <h3 id="score" style="color:blue;position:absolute;right:15%;top:{{i*3+3}}%;">{{results[i]}}</h3>
+        {% endif %}
+      {% endfor %}
+    </div>
     <script>
-      vabodyp;
       function initMap() {
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer;
@@ -47,5 +67,9 @@
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-L1-CDamtVsUcngy65o54omBY_wn9TT0&callback=initMap"
     async defer></script>
+
+    <div>
+
+    </div>
   </body>
 </html>
