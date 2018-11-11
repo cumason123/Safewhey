@@ -42,6 +42,7 @@ def getRouteValue(route):
 	start, end = getStartEndStepCoordinates(route)
 	vals = []
 	toggle = True
+	box = []
 	for i in range(len(start)):
 		lower_left_coordinate, upper_right_coordinate = boundRec(start[i], end[i])
 		params = (
@@ -73,10 +74,12 @@ def getRouteValue(route):
 					valueSum = valueSum/len(totalHomeScores)
 					subresult += valueSum
 				vals += [subresult/data['num_results_returned']]
+				box += [{'north': upper_right_coordinate[1], 'south':lower_left_coordinate[1],
+				'west': lower_left_coordinate[0], 'east':upper_right_coordinate[0], 'avg': vals[-1]}]
 	if len(vals) == 0:
 		return -1
 	avgval = sum(vals)/len(vals)
-	return avgval
+	return {'avgval': avgval, 'box': box}
 
 
 def getSomeRouteValues(start, end, max_num=3):
@@ -91,6 +94,7 @@ def getSomeRouteValues(start, end, max_num=3):
 		mode="walking", departure_time=now, alternatives=True)
 	routeValues = []
 	iter = 0
+	routeBoxes = {}
 	for route in directions_result:
 		if iter > max_num:
 			break
@@ -98,10 +102,11 @@ def getSomeRouteValues(start, end, max_num=3):
 		if num == -1:
 			routeValues += ['Unknown']
 		else:
-			routeValues += [getRouteValue(route)]
+			routeValues += [num['avgval']]
+			routeBoxes[iter-1] = num['box']
 		iter += 1
 	iter += -1
-	return routeValues, iter
+	return routeValues, iter, routeBoxes
 
 def SafeWhey(start_addr, dest_addr):
 	try:
@@ -111,7 +116,7 @@ def SafeWhey(start_addr, dest_addr):
 		return {'err': 'unknown location'}
 	ret = getSomeRouteValues(start_coord, end_coord)
 	return {'safety_vals':ret[0], 
-	'num_routes':ret[1]}
+	'num_routes':ret[1], 'routeBoxes': ret[2]}
 
 def boundRec(start, end):
 	lower_left_coordinate = [min(start[0], end[0]), min(start[1], end[1])]

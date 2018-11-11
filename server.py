@@ -26,14 +26,14 @@ def map():
 			return render_template('index.html', err='enter valid address')
 	else:
 		directions_result = distance_calc.create_directions_result()
-	print(vals['safety_vals'])
 	# return render_template('goog_map_example.html', results=vals['safety_vals'], 
 	# 	start=request.form['start'], end=request.form['dest'], mode="WALKING", 
 	# 	origin=start_coord, num_routes=vals['num_routes'])
-
+	print(vals['routeBoxes'])
 	return render_template('goog_map_example.html', results=[45, 45, 45], 
 		start=request.form['start'], end=request.form['dest'], mode="WALKING", 
-		origin=start_coord, num_routes=vals['num_routes'], holder=0)
+		origin=start_coord, num_routes=vals['num_routes'], holder=0, 
+		routeBoxes = vals['routeBoxes'])
 
 if __name__ == '__main__':
 	app.run(debug=True)
