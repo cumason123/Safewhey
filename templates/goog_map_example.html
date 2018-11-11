@@ -22,7 +22,31 @@
 
   </head>
   <body>
-    <div id="map"></div>
+ 
+    <div id="map">
+      
+    </div>
+    <div>
+        <form method="POST" action="/map">
+        <dev class="rand">
+        <h4>{{err}}</h4>
+        <p style ='padding: 0 7em 1em;'>
+          <label>
+          Starting Point</label>
+          <input type= "text" name="start"/>
+        </p>
+
+        <p>
+          <label>Destination</label>
+          <input type= "text" name="dest"/>
+        </p>
+
+        <nav>
+          <button type="submit" class = "button">Search</button> 
+        </nav>
+        </dev>
+      </form>
+      </div>
     <div style="position: relative;">
       <div id="panel"></div>
       
