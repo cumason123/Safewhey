@@ -30,7 +30,7 @@ def map():
 	# 	start=request.form['start'], end=request.form['dest'], mode="WALKING", 
 	# 	origin=start_coord, num_routes=vals['num_routes'])
 	print(vals['routeBoxes'])
-	return render_template('goog_map_example.html', results=[45, 45, 45], 
+	return render_template('goog_map_example.html', results=vals['safety_vals'], 
 		start=request.form['start'], end=request.form['dest'], mode="WALKING", 
 		origin=start_coord, num_routes=vals['num_routes'], holder=0, 
 		routeBoxes = vals['routeBoxes'])

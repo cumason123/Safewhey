@@ -57,14 +57,10 @@ def getRouteValue(route):
 		response = requests.get('https://apis.solarialabs.com/shine/v1/total-home-scores/area-search',
 			params = params)
 		data = response.json()
-		pprint.pprint(data)
 
 		if 'num_results_returned' in data:
 			if data['num_results_returned'] > 0:
 				results = data['results']
-				if (toggle):
-					print(data)
-					toggle = False
 				subresult = 0
 				for item in results:
 					totalHomeScores = item['totalHomeScores']['safety']
