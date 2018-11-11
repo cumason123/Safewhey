@@ -45,7 +45,6 @@ def testPoints(start, end):
 
 def getAreaVal(start, end):
 	start, end = getStartEndStepCoordinates(start, end)
-	print(start, end)
 	vals = []
 	for i in range(len(start)):
 		lower_left_coordinate, upper_right_coordinate = boundRec(start[i], end[i])
@@ -63,10 +62,17 @@ def getAreaVal(start, end):
 		data = response.json()
 		if data['num_results_returned'] > 0:
 			results = data['results']
-			subresult = []
+			subresult = 0
 			for item in results:
-				subresult += [item['totalHomeScores']]
-			# pprint.pprint(data['results']['totalHomeScores'])
+				totalHomeScores = item['totalHomeScores']['safety']
+				valueSum = 0
+				for key in totalHomeScores:
+					valueSum += totalHomeScores[key]['value']
+				valueSum = valueSum/len(totalHomeScores)
+				subresult += valueSum
+			vals += [subresult/data['num_results_returned']]
+	avgval = sum(vals)/len(vals)
+	return avgval
 
 def boundRec(start, end):
 	lower_left_coordinate = [min(start[0], end[0]), min(start[1], end[1])]
@@ -74,7 +80,7 @@ def boundRec(start, end):
 	return lower_left_coordinate, upper_right_coordinate
 
 if __name__ == '__main__':
-	getAreaVal([40.638982, -74.082301], [40.642608, -74.075460])
+	print(getAreaVal([42.3509, -71.108852], [42.349359, -71.09612]))
 	# testPoints([40.638982, -74.082301], [40.642608, -74.075460])
 
 
