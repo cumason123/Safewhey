@@ -30,9 +30,9 @@
         <form method="POST" action="/map">
         <dev class="rand">
         <h4>{{err}}</h4>
-        <p style ='padding: 0 7em 1em;'>
-          <label>
-          Starting Point</label>
+
+        <p>
+          <label>Starting Point</label>
           <input type= "text" name="start"/>
         </p>
 
@@ -50,16 +50,22 @@
     <div style="position: relative;">
       <div id="panel"></div>
       
-      <p id="score" style="position:absolute;right:15%;top:0%;">Safety Score for Routes:</p>
+      <p id="score" style="position:absolute;right:15%;top:0%;">Recommended, Global Safety Score:</p>
       {% for i in range(num_routes) %}
         {% if results[i] <= 40 %}
-          <h3 id="score" style="color:red;position:absolute;right:15%;top:{{i*4+3}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:red;position:absolute;right:15%;top:{{i*2+2}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:red;position:absolute;right:18%;top:{{i*2+2}}%;">{{distr[i]*100}}%</h3>
+
         {% elif results[i] <= 60 %}
-          <h3 id="score" style="color:orange;position:absolute;right:15%;top:{{i*4+3}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:orange;position:absolute;right:15%;top:{{i*2+2}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:orange;position:absolute;right:18%;top:{{i*2+2}}%;">{{distr[i]*100}}%</h3>
+
         {% elif results[i] <= 80 %}
-          <h3 id="score" style="color:green;position:absolute;right:15%;top:{{i*4+3}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:green;position:absolute;right:15%;top:{{i*2+2}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:green;position:absolute;right:18%;top:{{i*2+2}}%;">{{distr[i]*100}}%</h3>
         {% else %}
-          <h3 id="score" style="color:blue;position:absolute;right:15%;top:{{i*4+3}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:blue;position:absolute;right:15%;top:{{i*2+2}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:blue;position:absolute;right:18%;top:{{i*2+2}}%;">{{distr[i]*100}}%</h3>
         {% endif %}
       {% endfor %}
     </div>
@@ -85,27 +91,9 @@
             window.alert('Directions request failed due to ' + status);
           }
         });
-              var rectangle1 = new google.maps.Rectangle({
-                  strokeColor: '#FF0000',
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  fillColor: '#FF0000',
-                  fillOpacity: 0.35,
-                  map: map,
-                  bounds: {
-                    north: -71.106401,
-                    south: -71.119862,
-                    east: 42.355351,
-                    west: 42.348193
-                  }
-                });
         {% for key in routeBoxes %}
         {% for box in routeBoxes[key] %}
-          {% if box['avg'] <= 40 %}
-console.log('north: {{box["north"]}}')
-                console.log('east: {{box["east"]+100}}')
-                console.log('west: {{box["west"]}}')
-                console.log('south: {{box["south"]}}')                
+          {% if box['avg'] <= 40 %}              
                 rectangle = new google.maps.Rectangle({
                   strokeColor: '#FF0000',
                   strokeOpacity: 0.8,
@@ -121,10 +109,6 @@ console.log('north: {{box["north"]}}')
                   }
                 });
             {% elif box['avg'] <= 60 %}
-console.log('north: {{box["north"]}}')
-                console.log('east: {{box["east"]+100}}')
-                console.log('west: {{box["west"]}}')
-                console.log('south: {{box["south"]}}')
                   rectangle = new google.maps.Rectangle({
                     strokeColor: '#FF9a00',
                     strokeOpacity: 0.8,
@@ -141,10 +125,6 @@ console.log('north: {{box["north"]}}')
                   });
 
               {% elif box['avg'] <= 80 %}
-console.log('north: {{box["north"]}}')
-                console.log('east: {{box["east"]+100}}')
-                console.log('west: {{box["west"]}}')
-                console.log('south: {{box["south"]}}')
                   rectangle = new google.maps.Rectangle({
                     strokeColor: '#1fe300',
                     strokeOpacity: 0.8,
@@ -161,10 +141,6 @@ console.log('north: {{box["north"]}}')
                   });
 
               {% else %}
-                console.log('north: {{box["north"]}}')
-                console.log('east: {{box["east"]+100}}')
-                console.log('west: {{box["west"]}}')
-                console.log('south: {{box["south"]}}')
 
                 rectangle = new google.maps.Rectangle({
                     strokeColor: '#2b7bea',
