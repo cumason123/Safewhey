@@ -101,7 +101,7 @@ def getSomeRouteValues(start, end, max_num=3):
 			routeValues += [num['avgval']]
 			routeBoxes[iter-1] = num['box']
 		iter += 1
-	iter += -1
+	# iter += -1
 	return routeValues, iter, routeBoxes
 
 def SafeWhey(start_addr, dest_addr):

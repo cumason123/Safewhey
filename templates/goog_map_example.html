@@ -53,13 +53,13 @@
       <p id="score" style="position:absolute;right:15%;top:0%;">Safety Score for Routes:</p>
       {% for i in range(num_routes) %}
         {% if results[i] <= 40 %}
-          <h3 id="score" style="color:red;position:absolute;right:15%;top:{{i*3+3}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:red;position:absolute;right:15%;top:{{i*4+3}}%;">{{results[i]}}</h3>
         {% elif results[i] <= 60 %}
-          <h3 id="score" style="color:orange;position:absolute;right:15%;top:{{i*3+3}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:orange;position:absolute;right:15%;top:{{i*4+3}}%;">{{results[i]}}</h3>
         {% elif results[i] <= 80 %}
-          <h3 id="score" style="color:green;position:absolute;right:15%;top:{{i*3+3}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:green;position:absolute;right:15%;top:{{i*4+3}}%;">{{results[i]}}</h3>
         {% else %}
-          <h3 id="score" style="color:blue;position:absolute;right:15%;top:{{i*3+3}}%;">{{results[i]}}</h3>
+          <h3 id="score" style="color:blue;position:absolute;right:15%;top:{{i*4+3}}%;">{{results[i]}}</h3>
         {% endif %}
       {% endfor %}
     </div>
