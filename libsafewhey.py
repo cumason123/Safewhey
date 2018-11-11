@@ -4,23 +4,18 @@ from datetime import datetime
 import pprint
 gmaps_key = "AIzaSyA-L1-CDamtVsUcngy65o54omBY_wn9TT0"
 gmaps = googlemaps.Client(key = gmaps_key)
-now = datetime.now()
 
-def getStartEndStepCoordinates(start_coord, end_coord):
+def getStartEndStepCoordinates(route):
 	'''
 	Finds and returns lat-long coordinates for every movement along 
 	steps found through google maps api
 	'''
-	origin = str(start_coord[0]) + "," + str(start_coord[1])
-	dest = str(end_coord[0]) + "," + str(end_coord[1])
-	directions_result = gmaps.directions(origin, dest, 
-		mode="walking", departure_time=now)
-	if 'legs' in directions_result[0] and 'steps' in directions_result[0]['legs'][0]:
-		steps = directions_result[0]['legs'][0]['steps']
-	else:
-		return [], []
 	start = []
 	end = []
+	if 'legs' in route and 'steps' in route['legs'][0]:
+		steps = route['legs'][0]['steps']
+	else:
+		return [], []
 	for step in steps:
 		start += [[step['start_location']['lat'], step['start_location']['lng']]] if 'start_location' in step else None
 		end += [[step['end_location']['lat'], step['end_location']['lng']]] if 'end_location' in step else None
@@ -43,8 +38,8 @@ def testPoints(start, end):
 	data = response.json()
 	print(data)
 
-def getAreaVal(start, end):
-	start, end = getStartEndStepCoordinates(start, end)
+def getRouteValue(route):
+	start, end = getStartEndStepCoordinates(route)
 	vals = []
 	for i in range(len(start)):
 		lower_left_coordinate, upper_right_coordinate = boundRec(start[i], end[i])
@@ -60,19 +55,48 @@ def getAreaVal(start, end):
 		response = requests.get('https://apis.solarialabs.com/shine/v1/total-home-scores/area-search',
 			params = params)
 		data = response.json()
-		if data['num_results_returned'] > 0:
-			results = data['results']
-			subresult = 0
-			for item in results:
-				totalHomeScores = item['totalHomeScores']['safety']
-				valueSum = 0
-				for key in totalHomeScores:
-					valueSum += totalHomeScores[key]['value']
-				valueSum = valueSum/len(totalHomeScores)
-				subresult += valueSum
-			vals += [subresult/data['num_results_returned']]
+		if 'num_results_returned' in data:
+			if data['num_results_returned'] > 0:
+				results = data['results']
+				subresult = 0
+				for item in results:
+					totalHomeScores = item['totalHomeScores']['safety']
+					valueSum = 0
+					for key in totalHomeScores:
+						valueSum += totalHomeScores[key]['value']
+					valueSum = valueSum/len(totalHomeScores)
+					subresult += valueSum
+				vals += [subresult/data['num_results_returned']]
 	avgval = sum(vals)/len(vals)
 	return avgval
+
+
+def getSomeRouteValues(start, end, max_num=3):
+	if 'lat' in start:
+		origin = str(start['lat']) + "," + str(start['lng'])
+		dest = str(end['lat']) + "," + str(end['lng'])
+	else:
+		origin = str(start[0]) + "," + str(start[1])
+		dest = str(end[0]) + "," + str(end[1])
+	now = datetime.now()
+	directions_result = gmaps.directions(origin, dest, 
+		mode="walking", departure_time=now, alternatives=True)
+	routeValues = []
+	iter = 0
+	for route in directions_result:
+		if iter > max_num:
+			break
+		routeValues += [getRouteValue(route)]
+		iter += 1
+	return routeValues
+
+def getSrcDestSafetyRouteVals(start_addr, dest_addr):
+	try:
+		start_coord = gmaps.geocode(start_addr)[0]['geometry']['location']
+		end_coord = gmaps.geocode(dest_addr)[0]['geometry']['location']
+	except:
+		return {'err': 'unknown location'}
+	return {'safety_vals':getSomeRouteValues(start_coord, end_coord)}
 
 def boundRec(start, end):
 	lower_left_coordinate = [min(start[0], end[0]), min(start[1], end[1])]
@@ -80,7 +104,5 @@ def boundRec(start, end):
 	return lower_left_coordinate, upper_right_coordinate
 
 if __name__ == '__main__':
-	print(getAreaVal([42.3509, -71.108852], [42.349359, -71.09612]))
+	print(getSrcDestSafetyRouteVals('16 winter ave', 'staten island technical highschool'))
 	# testPoints([40.638982, -74.082301], [40.642608, -74.075460])
-
-
